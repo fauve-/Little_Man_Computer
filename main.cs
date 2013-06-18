@@ -61,11 +61,11 @@ public class Interpreter
   
   private System.Tuple<int,int> parseInstruction()
   {
-    string ins = prog[instructionPointer].ToString();
+    string ins = prog[instructionPointer];
     string arg = ins[1].ToString();
     arg+=ins[2];
-    return new System.Tuple<int,int>(Convert.ToInt32(ins[0]), 
-                                     Convert.ToInt32(arg));
+    return new System.Tuple<int,int>(Int32.Parse(ins[0].ToString()), 
+                                     Int32.Parse(arg));
   }
   
   private void dispatch(int instruction, int arg)
