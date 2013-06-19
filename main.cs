@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 
 
 public class Program
@@ -34,38 +33,33 @@ public class Interpreter
   private string[] prog;
   private Dictionary<int,int> mailboxes; //state
   private int instructionPointer;
-  private int dataPointer;
-  private int inbox;
-  private int outbox;
   private int accumulator;
   public Interpreter(string program)
   {
-    prog = program.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+    prog = program.Split(new char[] {   ' ', '\n'} , 
+                         StringSplitOptions.RemoveEmptyEntries);                
     mailboxes = new Dictionary<int,int>();
     instructionPointer = 0;
-    dataPointer = 0;
-    inbox = 0;
-    outbox = 0;
     accumulator = 0;
   }
   public void Interpret()
   {
     while(instructionPointer < prog.Length)
       {
-        System.Tuple<int,int> parsed = parseInstruction();
+        Tuple<int,int> parsed = parseInstruction();
         dispatch(parsed.Item1,parsed.Item2);
         instructionPointer++;
       }
   }
 
   
-  private System.Tuple<int,int> parseInstruction()
+  private Tuple<int,int> parseInstruction()
   {
     string ins = prog[instructionPointer];
     string arg = ins[1].ToString();
     arg+=ins[2];
-    return new System.Tuple<int,int>(Int32.Parse(ins[0].ToString()), 
-                                     Int32.Parse(arg));
+    return new Tuple<int,int>(Int32.Parse(ins[0].ToString()), 
+                              Int32.Parse(arg));
   }
   
   private void dispatch(int instruction, int arg)
