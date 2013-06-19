@@ -1,6 +1,7 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
-
+using System.Collections;
 /*
   So, what's happening here?
   The little man computer is a teaching too used to illustrate the Von Neumann
@@ -72,7 +73,18 @@ public class Interpreter
     mailboxes = new Dictionary<int,int>();
     instructionPointer = 0;
     accumulator = 0;
+    loadProgram();
   }
+
+  private void loadProgram()
+  {
+    foreach(var addr in Enumerable.Range(0,prog.Length))
+      {
+        mailboxes[addr] = Convert.ToInt32(prog[addr]);
+      }
+  }
+
+  
   public void Interpret()
   {
     while(instructionPointer < prog.Length)
@@ -86,11 +98,9 @@ public class Interpreter
   
   private Tuple<int,int> parseInstruction()
   {
-    string ins = prog[instructionPointer];
-    string arg = ins[1].ToString();
-    arg+=ins[2];
-    return new Tuple<int,int>(Int32.Parse(ins[0].ToString()), 
-                              Int32.Parse(arg));
+    int ins = mailboxes[instructionPointer] / 100;
+    int arg = mailboxes[instructionPointer] % 100;
+    return new Tuple<int,int>(ins, arg);
   }
   
   private void dispatch(int instruction, int arg)
