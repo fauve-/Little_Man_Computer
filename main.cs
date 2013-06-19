@@ -1,6 +1,37 @@
 using System;
 using System.Collections.Generic;
 
+/*
+  So, what's happening here?
+  The little man computer is a teaching too used to illustrate the Von Neumann
+  architecture to students.
+  There are 100 mailboxes (here represented by the dictionary<int,int> state.
+  these mailboxes hold both instructions and data.
+  The instruction pointer starts at zero and moves onward until it hits a 000 
+  (hlt) instruction and quits, or a branch, and execution carries on elsewhere.
+
+  The instruction set is thus:
+
+  1XX ADD -> Adds whatever value is in box XX to the accumulator. 
+             The result is stored in the accumulator.
+  2XX SUB -> Subtracts whatever value is in box XX from the accumulator.
+             Again, the result is stored in the accumulator.
+  3XX STA -> Stores the accumulator in box XX.
+  
+  5XX LDA -> Loads whatever is in box XX into the accumulator.
+
+  6XX BRA -> Sends the instruction pointer to box XX unconditionally.
+
+  7XX BRZ -> Sends the instruction pointer to box XX if the accumulator is zero.
+  
+  8XX BRP -> Sends the instruction pointer to box XX if the accumulator is 
+             positive.
+  901 INP -> Takes input from the user.
+
+  902 OUT -> Outputs a value to the user
+
+  
+*/
 
 public class Program
 {
