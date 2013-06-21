@@ -36,10 +36,22 @@ using System.Text;
 
   SPECIAL MACROS ->>
 
-          CORE_DUMP -> will dump a numbered grid of all registers
-  
+          CORE_DUMP -> will dump a grid of all registers
+          
+          JOHNNY_M -> a mnemonic-ified core dump
+          
 
+  TODO: Refactor into something that isn't a sketch. 
+        Develop something resembling a user interface.
+        Build a proper AST, allow labels, mnemonics w/args.
+           ^this might be goofy for a glorified turing machine.
 
+        search soul, consider writing assembler for 6502.
+        
+        ALSO CHANGE EMACS DEFAULT GODAWFUL BRACING STYLE. K+R 4 LYFE
+        
+        
+        
 
 */
 
@@ -85,6 +97,9 @@ public class Interpreter
     loadProgram();
   }
 
+
+  //could probably be abstracted away into a parser class, or at least drop
+  //drop the helper functions into a static class of some kind
   private void loadProgram()
   {
     foreach(var addr in Enumerable.Range(0,prog.Length))
@@ -94,9 +109,21 @@ public class Interpreter
             mailboxes[addr] = 991;
             continue;
           }
+        if(prog[addr] == "JOHNNY_M")
+          {
+            mailboxes[addr] = 992;
+            continue;
+          }
 
         mailboxes[addr] = Convert.ToInt32(prog[addr]);
       }
+    /*uncomment for own commit
+      //fills out rest of mailboxes
+      foreach(var addr in Enumerable.Range(prog.Length + 1, 100))
+      {
+      mailboxes[addr] = 0;
+      }
+      */
   }
 
   
@@ -163,6 +190,10 @@ public class Interpreter
           {
             coreDump();
           }
+        else if(arg == 92)
+          {
+            prettierCoreDump();
+          }
         else
           {
             throw new Exception("Invalid argument to 900 instruction");
@@ -177,6 +208,8 @@ public class Interpreter
       }
   }
 
+
+  //these belong in the parsing unit.
   private void coreDump()
   {
     StringBuilder sb = new StringBuilder();
@@ -193,4 +226,33 @@ public class Interpreter
     sb.AppendLine("");
     Console.WriteLine(sb.ToString());
   }
+
+  //note: macro transformation has already taken place.
+  private void prettierCoreDump()
+  {
+    Dictionary<int,string> tt = new Dictionary<int,string>();//translation table
+    tt.Add(1,"ADD");
+    tt.Add(2,"SUB");
+    tt.Add(3,"STA");
+    tt.Add(5,"LDA");
+    tt.Add(6,"BRA");
+    tt.Add(7,"BRZ");
+    tt.Add(8,"BRP");
+    tt.Add(9, "SPECIAL");
+    tt.Add(0,"HALT");
+    StringBuilder sb = new StringBuilder();
+    sb.AppendLine("Note, there is no way to tell the difference between code and data in this architecture. All mailboxes will be interpreted as code");
+    foreach(var i in mailboxes.Keys)
+        {
+          var box =  mailboxes[i];
+          var inst = box/ 100;
+          var arg = box % 100;
+          sb.Append(tt[inst]);
+          sb.Append(" ");
+          sb.Append(arg);
+          sb.AppendLine();
+        }
+    Console.WriteLine(sb.ToString());
+  }
+
 }
