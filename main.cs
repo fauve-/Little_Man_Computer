@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections;
+using System.Text;
 /*
   So, what's happening here?
   The little man computer is a teaching too used to illustrate the Von Neumann
@@ -30,8 +31,16 @@ using System.Collections;
   901 INP -> Takes input from the user.
 
   902 OUT -> Outputs a value to the user
-
   
+
+
+  SPECIAL MACROS ->>
+
+          CORE_DUMP -> will dump a numbered grid of all registers
+  
+
+
+
 */
 
 public class Program
@@ -80,6 +89,12 @@ public class Interpreter
   {
     foreach(var addr in Enumerable.Range(0,prog.Length))
       {
+        if(prog[addr] == "CORE_DUMP")
+          {
+            mailboxes[addr] = 991;
+            continue;
+          }
+
         mailboxes[addr] = Convert.ToInt32(prog[addr]);
       }
   }
@@ -144,6 +159,10 @@ public class Interpreter
           {
             Console.WriteLine(accumulator);
           }
+        else if(arg == 91)
+          {
+            coreDump();
+          }
         else
           {
             throw new Exception("Invalid argument to 900 instruction");
@@ -156,5 +175,22 @@ public class Interpreter
                             String.Format("invalid instruction {0}", 
                                           instruction));
       }
+  }
+
+  private void coreDump()
+  {
+    StringBuilder sb = new StringBuilder();
+    sb.AppendLine("CORE DUMP INCOMING");
+    foreach(var i in mailboxes.Keys)
+      {
+        sb.Append(mailboxes[i].ToString());
+        sb.Append(" ");
+        if(i % 10 == 0 && i != 0)
+          {
+            sb.AppendLine("");
+          }
+      }
+    sb.AppendLine("");
+    Console.WriteLine(sb.ToString());
   }
 }
