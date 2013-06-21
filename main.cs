@@ -117,13 +117,12 @@ public class Interpreter
 
         mailboxes[addr] = Convert.ToInt32(prog[addr]);
       }
-    /*uncomment for own commit
       //fills out rest of mailboxes
-      foreach(var addr in Enumerable.Range(prog.Length + 1, 100))
+      foreach(var addr in Enumerable.Range(prog.Length + 1, 101))
       {
       mailboxes[addr] = 0;
       }
-      */
+      
   }
 
   
@@ -216,7 +215,7 @@ public class Interpreter
     sb.AppendLine("CORE DUMP INCOMING");
     foreach(var i in mailboxes.Keys)
       {
-        sb.Append(mailboxes[i].ToString());
+        sb.Append(mailboxes[i].ToString("D3"));
         sb.Append(" ");
         if(i % 10 == 0 && i != 0)
           {
@@ -241,7 +240,8 @@ public class Interpreter
     tt.Add(9, "SPECIAL");
     tt.Add(0,"HALT");
     StringBuilder sb = new StringBuilder();
-    sb.AppendLine("Note, there is no way to tell the difference between code and data in this architecture. All mailboxes will be interpreted as code");
+    sb.AppendLine("Note, there is no way to tell the difference between code and data in this architecture. All mailboxes will be interpreted as code.");
+    sb.AppendLine("The best way to tell if something is a data value is if it registers as a halt with an argument that isn't zero.");
     foreach(var i in mailboxes.Keys)
         {
           var box =  mailboxes[i];
